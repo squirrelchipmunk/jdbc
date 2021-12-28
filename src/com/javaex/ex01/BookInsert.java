@@ -22,6 +22,10 @@ public class BookInsert {
 			conn = DriverManager.getConnection(url, "webdb", "webdb");
 			System.out.println("접속성공");
 
+			
+			///////////////////////////////////////////
+			//             (순정만화/강풀)
+			///////////////////////////////////////////
 			// 3. SQL문 준비 / 바인딩 / 실행  *****
 
 			//문자열 만들기 --> ? 주의
@@ -34,10 +38,10 @@ public class BookInsert {
 			pstmt = conn.prepareStatement(query);
 
 			//바인딩
-			pstmt.setString(1, "삼국지");
-			pstmt.setString(2, "민음사");
-			pstmt.setString(3, "2002/03/01"); 
-			pstmt.setInt(4, 1);  // 1~6
+			pstmt.setString(1, "순정만화");
+			pstmt.setString(2, "재미주의");
+			pstmt.setString(3, "2011/08/03"); 
+			pstmt.setInt(4, 5);  // 1~6
 
 			//실행
 			int count = pstmt.executeUpdate(); //쿼리문 실행
@@ -45,7 +49,23 @@ public class BookInsert {
 			// 4.결과처리
 			System.out.println(count + " 건이 저장되었습니다.");
 
+			
+			//////////////// (오직두사람/김영하)
+			///////////////////////////////////////////
+	
+			//바인딩
+			pstmt.setString(1, "오직두사람");
+			pstmt.setString(2, "문학동네");
+			pstmt.setString(3, "2017/05/04"); 
+			pstmt.setInt(4, 6);
 
+			//실행
+			count = pstmt.executeUpdate(); //쿼리문 실행
+
+			// 4.결과처리
+			System.out.println(count + " 건이 저장되었습니다.");
+
+			
 		} catch (ClassNotFoundException e) {
 			System.out.println("error: 드라이버 로딩 실패 - " + e);
 		} catch (SQLException e) {
