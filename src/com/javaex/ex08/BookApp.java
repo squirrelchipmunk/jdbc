@@ -1,13 +1,12 @@
 package com.javaex.ex08;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class BookApp {
 
 	public static void main(String[] args) {
-		List<BookVo> bookList = new ArrayList<>();
+		List<BookVo> bookList;
 		AuthorDao authorDao = new AuthorDao();
 		BookDao bookDao = new BookDao();
 		
