@@ -1,4 +1,4 @@
-package com.javaex.ex05;
+package com.javaex.ex08;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,8 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class BookDao {
+public class AuthorDao {
 
 	private Connection conn = null;
 	private PreparedStatement pstmt = null;
@@ -23,16 +22,20 @@ public class BookDao {
 	private void getConnection(){
 		try {
 			Class.forName(driver);
-			conn = DriverManager.getConnection(url, id, pw);
+			conn = DriverManager.getConnection(url, id, pw);			
 		}catch (ClassNotFoundException e) {
 			System.out.println("error: 드라이버 로딩 실패 - " + e);
-		} catch (SQLException e) {
+		}catch (SQLException e) {
 			System.out.println("error:" + e);
 		}
+		
 	}
 	
 	private void close() {
-		try {               
+		try {    
+			if (rs != null) {
+				rs.close();
+			}
 			if (pstmt != null) {
 				pstmt.close();
 			}
@@ -44,109 +47,100 @@ public class BookDao {
 		}
 	}
 	
-	public void BookInsert(BookVo vo) {
-
+	
+	public void authorInsert(AuthorVo vo) {
+		
 		try {
 			getConnection();
 
 			String query ="";
-			query += " insert into book ";
-			query += " values(seq_book_id.nextval, ?, ?, ?, ?) " ;
+			query += " insert into author ";
+			query += " values(seq_author_id.nextval, ?, ? ) " ;
 
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, vo.getTitle());    
-			pstmt.setString(2, vo.getPubs());
-			pstmt.setString(3, vo.getPubDate());
-			pstmt.setInt   (4, vo.getAuthorId());
+			pstmt.setString(1, vo.getAuthorName());    
+			pstmt.setString(2, vo.getAuthorDesc());  
 			
 			int count = pstmt.executeUpdate();  
 			System.out.println(count + " 건이 저장되었습니다.");
-
+			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} 
-		
 		close();
+		
 	}
 
-	public void bookUpdate(BookVo vo) {
+	public void authorUpdate(AuthorVo vo) {
 
 		try {
 			getConnection();
 
 			String query ="";
-			query += " update book ";
-		    query += " set title = ?, ";
-		    query += " 	   pubs = ?, " ;
-		    query += " 	   pub_date = ?, " ;
-		    query += " 	   author_id = ? " ;
-		    query += " where book_id = ? " ;
+			query += " update author ";
+		    query += " set author_name = ?, ";
+		    query += " 	   author_desc = ? " ;
+		    query += " where author_id = ? " ;
 
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, vo.getTitle()); 
-		    pstmt.setString(2, vo.getPubs()); 
-		    pstmt.setString(3, vo.getPubDate()); 
-		    pstmt.setInt(4, vo.getAuthorId()); 
-		    pstmt.setInt(5, vo.getBookId()); 
+			pstmt.setString(1, vo.getAuthorName());   //첫번째 물음표의 데이터
+		    pstmt.setString(2, vo.getAuthorDesc()); //두번째 물음표의 데이터
+		    pstmt.setInt(3, vo.getAuthorId());    
 			
 			int count = pstmt.executeUpdate();  
 			System.out.println(count + " 건이 수정되었습니다.");
 
-		} catch (SQLException e) {
+		}catch (SQLException e) {
 			System.out.println("error:" + e);
 		} 
-	
+		
 		close();
+		
 	}
 	
 
-	public void bookDelete(int bookId) {
-
+	public void authorDelete(int authorId) {
+	
 		try {
 			getConnection();
 
 			String query ="";
-			query += " delete from book ";
-		    query += " where book_id = ? ";
+			query += " delete from author ";
+		    query += " where author_id = ? ";
 
 			pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, bookId);      
+			pstmt.setInt(1, authorId);      
 			
 			int count = pstmt.executeUpdate();  
 			System.out.println(count + " 건이 삭제되었습니다.");
-
-		} catch (SQLException e) {
+			
+		}catch (SQLException e) {
 			System.out.println("error:" + e);
 		} 
+		
 		close();
+		
 	}
 
-	public List<BookVo> bookSelect() {
-		List<BookVo> bookList = new ArrayList<>();
+	public List<AuthorVo> authorSelect() {
+		List<AuthorVo> authorList = new ArrayList<>();
 		
 		try {
 			getConnection();
 
 			String query ="";
-			query += " select book_id, "; // as 사용 가능
-			query += " 	 	  title, ";
-			query += " 		  pubs, ";
-			query += " 		  to_char(pub_date,'yyyy-mm-dd'), ";
-			query += " 		  author.author_id, ";
-			query += " 		  author_name, ";
+			query += " select author_id id, "; // as 사용 가능
+			query += " 	 	  author_name, ";
 			query += " 		  author_desc ";
-			query += " from book, author ";
-			query += " where book.author_id = author.author_id ";
+			query += " from author ";
 
 			pstmt = conn.prepareStatement(query);   
 			
 			rs = pstmt.executeQuery();  
 			
 			while(rs.next()) {
-				BookVo vo = new BookVo(
-						rs.getInt(1), rs.getString(2), rs.getString(3), 
-						rs.getString(4), rs.getInt(5), rs.getString(6), rs.getString(7));
-				bookList.add(vo);
+				AuthorVo vo = new AuthorVo(rs.getInt(1), rs.getString(2), rs.getString(3));
+				authorList.add(vo);
 			}
 
 		} catch (SQLException e) {
@@ -154,8 +148,8 @@ public class BookDao {
 		} 
 		
 		close();
-			
-		return bookList;
+		
+		return authorList;
 	}
 	
 }

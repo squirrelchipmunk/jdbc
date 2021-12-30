@@ -20,7 +20,7 @@ public class BookApp {
 		
 		bookList = bookDao.bookSelect();
 		for(BookVo vo : bookList) {
-			System.out.println(vo.getBookId()+", "+vo.getTitle()+", "+vo.getPubs()+", "+vo.getPubDate()+", "+vo.getAuthorName());
+			System.out.println(vo.getBookId()+", "+vo.getTitle()+", "+vo.getPubs()+", "+vo.getPubDate()+", "+vo.getAuthorId()+", "+vo.getAuthorName()+", "+vo.getAuthorDesc());
 		}
 		System.out.println();
 		
@@ -32,7 +32,7 @@ public class BookApp {
 		System.out.println();
 		
 		for(BookVo vo : bookList) {
-			System.out.println(vo.getBookId()+", "+vo.getTitle()+", "+vo.getPubs()+", "+vo.getPubDate()+", "+vo.getAuthorName());
+			System.out.println(vo.getBookId()+", "+vo.getTitle()+", "+vo.getPubs()+", "+vo.getPubDate()+", "+vo.getAuthorId()+", "+vo.getAuthorName()+", "+vo.getAuthorDesc());
 		}
 		System.out.println();
 		
@@ -44,24 +44,10 @@ public class BookApp {
 		
 		bookList = bookDao.bookSelect();
 		for(BookVo vo : bookList) {
-			System.out.println(vo.getBookId()+", "+vo.getTitle()+", "+vo.getPubs()+", "+vo.getPubDate()+", "+vo.getAuthorName());
+			System.out.println(vo.getBookId()+", "+vo.getTitle()+", "+vo.getPubs()+", "+vo.getPubDate()+", "+vo.getAuthorId()+", "+vo.getAuthorName()+", "+vo.getAuthorDesc());
 		}
 		System.out.println();
 		
-		// 책 검색
-		System.out.println("*********** 책 검색 **************");
-		Scanner sc = new Scanner(System.in);
-		System.out.print("키워드를 입력하세요 : ");
-		String key = sc.nextLine();
-
-		bookList = bookDao.bookSelect();
-		
-		for(BookVo vo : bookList) {
-			if(vo.getTitle().contains(key) || vo.getPubs().contains(key) || vo.getAuthorName().contains(key)) {
-				System.out.println(vo.getBookId()+", "+vo.getTitle()+", "+vo.getPubs()+", "+vo.getPubDate()+", "+vo.getAuthorName());
-			}
-		}
-		sc.close();
 		
 	}
 

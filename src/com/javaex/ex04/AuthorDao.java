@@ -10,24 +10,50 @@ import java.util.List;
 
 public class AuthorDao {
 
+	private Connection conn = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs= null;
+	
 	private String driver = "oracle.jdbc.driver.OracleDriver";
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String id = "webdb";
 	private String pw = "webdb";
 	
-	private Connection getConnection() throws ClassNotFoundException, SQLException {
-		Class.forName(driver);
-		Connection conn = DriverManager.getConnection(url, id, pw);
-		System.out.println("접속성공");
-		return conn;
+	private void getConnection(){
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, id, pw);
+			System.out.println("접속성공");
+			
+		}catch (ClassNotFoundException e) {
+			System.out.println("error: 드라이버 로딩 실패 - " + e);
+		}catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+		
 	}
 	
+	private void close() {
+		try {    
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+	}
+	
+	
 	public void authorInsert(AuthorVo vo) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-
+		
 		try {
-			conn = getConnection();
+			getConnection();
 
 			String query ="";
 			query += " insert into author ";
@@ -39,32 +65,18 @@ public class AuthorDao {
 			
 			int count = pstmt.executeUpdate();  
 			System.out.println(count + " 건이 저장되었습니다.");
-			System.out.println("----------------------------------");
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("error: 드라이버 로딩 실패 - " + e);
+			
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-		} finally {
-			try {               
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				System.out.println("error:" + e);
-			}
-		}
+		} 
+		close();
+		
 	}
 
 	public void authorUpdate(AuthorVo vo) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
 
 		try {
-			conn = getConnection();
+			getConnection();
 
 			String query ="";
 			query += " update author ";
@@ -79,33 +91,20 @@ public class AuthorDao {
 			
 			int count = pstmt.executeUpdate();  
 			System.out.println(count + " 건이 수정되었습니다.");
-			System.out.println("----------------------------------");
 
-		} catch (ClassNotFoundException e) {
-			System.out.println("error: 드라이버 로딩 실패 - " + e);
-		} catch (SQLException e) {
+		}catch (SQLException e) {
 			System.out.println("error:" + e);
-		} finally {
-			try {               
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				System.out.println("error:" + e);
-			}
-		}
+		} 
+		
+		close();
+		
 	}
 	
 
 	public void authorDelete(int authorId) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-
+	
 		try {
-			conn = getConnection();
+			getConnection();
 
 			String query ="";
 			query += " delete from author ";
@@ -116,34 +115,20 @@ public class AuthorDao {
 			
 			int count = pstmt.executeUpdate();  
 			System.out.println(count + " 건이 삭제되었습니다.");
-			System.out.println("----------------------------------");
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("error: 드라이버 로딩 실패 - " + e);
-		} catch (SQLException e) {
+			
+		}catch (SQLException e) {
 			System.out.println("error:" + e);
-		} finally {
-			try {               
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				System.out.println("error:" + e);
-			}
-		}
+		} 
+		
+		close();
+		
 	}
 
 	public List<AuthorVo> authorSelect() {
 		List<AuthorVo> authorList = new ArrayList<>();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs= null;
+		
 		try {
-			conn = getConnection();
-			System.out.println("접속성공");
+			getConnection();
 
 			String query ="";
 			query += " select author_id id, "; // as 사용 가능
@@ -160,22 +145,11 @@ public class AuthorDao {
 				authorList.add(vo);
 			}
 
-		} catch (ClassNotFoundException e) {
-			System.out.println("error: 드라이버 로딩 실패 - " + e);
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
-		} finally {
-			try {               
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				System.out.println("error:" + e);
-			}
-		}
+		} 
+		
+		close();
 		
 		return authorList;
 	}

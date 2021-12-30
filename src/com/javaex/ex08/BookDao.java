@@ -1,4 +1,4 @@
-package com.javaex.ex05;
+package com.javaex.ex08;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -139,6 +139,49 @@ public class BookDao {
 			query += " where book.author_id = author.author_id ";
 
 			pstmt = conn.prepareStatement(query);   
+			
+			rs = pstmt.executeQuery();  
+			
+			while(rs.next()) {
+				BookVo vo = new BookVo(
+						rs.getInt(1), rs.getString(2), rs.getString(3), 
+						rs.getString(4), rs.getInt(5), rs.getString(6), rs.getString(7));
+				bookList.add(vo);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} 
+		
+		close();
+			
+		return bookList;
+	}
+	
+	public List<BookVo> bookSearch(String key) {
+		List<BookVo> bookList = new ArrayList<>();
+		
+		try {
+			getConnection();
+
+			String query ="";
+			query += " select book_id, "; // as 사용 가능
+			query += " 	 	  title, ";
+			query += " 		  pubs, ";
+			query += " 		  to_char(pub_date,'yyyy-mm-dd'), ";
+			query += " 		  author.author_id, ";
+			query += " 		  author_name, ";
+			query += " 		  author_desc ";
+			query += " from book, author ";
+			query += " where book.author_id = author.author_id and ";
+			query += " 		 (title like ? or ";
+			query += " 		  pubs like ? or ";
+			query += " 		  author_name like ?) ";
+			
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, "%"+key+"%");
+			pstmt.setString(2, "%"+key+"%");
+			pstmt.setString(3, "%"+key+"%");
 			
 			rs = pstmt.executeQuery();  
 			
